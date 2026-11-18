@@ -1,0 +1,5 @@
+node_modules/
+dist/
+*.lic
+sample_*.csv
+parcelaudit_claims_report.csv
