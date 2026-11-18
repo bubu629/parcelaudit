@@ -2,14 +2,19 @@ name: Build ParcelAudit Binaries
 on:
   push:
     tags: ['v*']
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20' }
-      - run: npx @yao-pkg/pkg . --targets node20-macos-arm64,node20-win-x64,node20-linux-x64 --output dist/parcelaudit
+      - uses: oven-sh/setup-bun@v2
+      - run: |
+          mkdir -p dist
+          bun build index.js --compile --target=bun-darwin-arm64 --outfile dist/parcelaudit-macos-arm64
+          bun build index.js --compile --target=bun-windows-x64 --outfile dist/parcelaudit-win-x64.exe
+          bun build index.js --compile --target=bun-linux-x64 --outfile dist/parcelaudit-linux-x64
       - uses: softprops/action-gh-release@v2
         with:
           files: dist/*
